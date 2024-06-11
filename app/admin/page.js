@@ -6,6 +6,7 @@ import axios from 'axios';
 export default function Admin() {
     const [entries, setEntries] = useState([]);
     const [limit, setLimit] = useState('');
+    const [message, setMessage] = useState('');
     const [winnerIds, setWinnerIds] = useState([]);
 
     useEffect(() => {
@@ -38,7 +39,7 @@ export default function Admin() {
             const response = await axios.post('/api/entries/limit', { limit });
             setMessage(response.data.message);
         } catch (error) {
-            setMessage('Failed to set limit.');
+            setMessage(error.response?.data?.message || 'Error setting limit.');
         }
     };
 
@@ -68,6 +69,7 @@ export default function Admin() {
                 />
                 <button onClick={handleLimitChange}>Set Limit</button>
             </div>
+            {message && <p>{message}</p>}
         </div>
     );
 }
