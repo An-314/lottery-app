@@ -36,10 +36,10 @@ export default function Admin() {
 
     const handleLimitChange = async () => {
         try {
-            const response = await axios.post('/api/entries/limit', { limit });
+            const response = await axios.post('/api/limit', { limit });
             setMessage(response.data.message);
         } catch (error) {
-            setMessage(error.response?.data?.message || 'Error setting limit.');
+            setMessage('Failed to set limit.');
         }
     };
 
