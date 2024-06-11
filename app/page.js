@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 export default function Home() {
   const [userId, setUserId] = useState('');
   const [status, setStatus] = useState('');
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     fetch('/api/entries')
@@ -24,7 +24,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId, timestamp: new Date().toISOString() }),
+        body: JSON.stringify({ userId }),
       });
 
       if (response.ok) {
@@ -54,6 +54,11 @@ export default function Home() {
         <button type="submit">Submit</button>
       </form>
       {status && <p>{status}</p>}
+      <ul>
+        {data.map((entry, index) => (
+          <li key={index}>{entry.userId} - {new Date(entry.timestamp.toDate()).toLocaleString()}</li>
+        ))}
+      </ul>
     </div>
   );
 }
