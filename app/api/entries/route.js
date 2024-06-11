@@ -1,5 +1,7 @@
-import { collection, getDocs, addDoc, query, orderBy, limit, deleteDoc, doc, getFirestore } from 'firebase/firestore';
+import { collection, getDocs, addDoc, query, orderBy, limit, deleteDoc, doc, getDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
+
+const settingsDocRef = doc(db, 'settings', 'maxEntries');
 
 export async function GET() {
     try {
@@ -25,11 +27,30 @@ export async function GET() {
 
 export async function POST(request) {
     try {
+        console.log('Starting POST request handling');
+
         const newEntry = await request.json();
+        console.log('Received new entry:', newEntry);
+
         const q = query(collection(db, 'entries'), orderBy('timestamp'), limit(30));
         const querySnapshot = await getDocs(q);
+        console.log('Current entries count:', querySnapshot.size);
 
-        if (querySnapshot.size >= 30) {
+        // 获取maxEntries的值
+        const settingsDoc = await getDoc(settingsDocRef);
+        let maxEntries;
+        if (settingsDoc.exists()) {
+            maxEntries = settingsDoc.data().maxEntries;
+            console.log('Fetched maxEntries from settings:', maxEntries);
+        } else {
+            // 如果文档不存在，设置默认值并创建文档
+            maxEntries = 30;
+            console.log('Settings document does not exist, setting default maxEntries:', maxEntries);
+            await setDoc(settingsDocRef, { maxEntries });
+        }
+
+        if (querySnapshot.size >= maxEntries) {
+            console.log('Max entries reached, draw is closed');
             return new Response(JSON.stringify({ error: 'The draw is closed.' }), {
                 status: 400,
                 headers: {
@@ -40,8 +61,9 @@ export async function POST(request) {
 
         await addDoc(collection(db, 'entries'), {
             userId: newEntry.userId,
-            timestamp: new Date(),
+            timestamp: Timestamp.now(),
         });
+        console.log('New entry added successfully');
 
         return new Response(JSON.stringify({ message: 'Data submitted successfully' }), {
             status: 200,
@@ -59,6 +81,7 @@ export async function POST(request) {
         });
     }
 }
+
 
 export async function DELETE() {
     try {

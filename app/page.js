@@ -56,7 +56,7 @@ export default function Home() {
       {status && <p>{status}</p>}
       <ul>
         {data.map((entry, index) => (
-          <li key={index}>{entry.userId} - {new Date(entry.timestamp.toDate()).toLocaleString()}</li>
+          <li key={index}>{entry.userId} - {new Date(entry.timestamp).toLocaleString()}</li>
         ))}
       </ul>
     </div>
