@@ -73,17 +73,17 @@ export default function Admin() {
     return (
         <div className="flex items-start justify-center min-h-screen bg-gray-100 p-4 space-x-4">
             <div className="w-1/4 bg-white p-4 rounded shadow-md">
-                <h2 className="text-xl font-bold mb-4">Winners</h2>
+                <h2 className="text-black text-xl font-bold mb-4">Winners</h2>
                 <ul className="space-y-2">
                     {entries.map((entry, index) => (
-                        <li key={index} className="bg-gray-200 p-2 rounded">{entry}</li>
+                        <li key={index} className="bg-gray-200 p-2 rounded text-black">{entry}</li>
                     ))}
                 </ul>
                 <button onClick={handleExport} className="mt-4 w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-700">Export Entries</button>
                 <button onClick={handleClear} className="mt-2 w-full py-2 bg-red-500 text-white rounded hover:bg-red-700">Clear Entries</button>
             </div>
             <div className="w-1/2 flex flex-col items-center justify-center bg-white p-4 rounded shadow-md space-y-4">
-                <h2 className="text-xl font-bold">Admin Panel</h2>
+                <h2 className="text-xl text-black font-bold">Admin Panel</h2>
                 <img src="/image/admin.png" alt="Event Logo" className="w-1/2" />
                 <div className="w-full">
                     <label className="block text-gray-700">Current Limit: {currentLimit}</label>
@@ -92,7 +92,7 @@ export default function Admin() {
                         value={limit}
                         onChange={(e) => setLimit(e.target.value)}
                         placeholder="Set Lottery Limit"
-                        className="w-full p-2 border border-gray-300 rounded bg-darkred-700 text-darkyellow-500"
+                        className="w-full p-2 border border-gray-300 rounded bg-gray-200 text-darkyellow-500"
                     />
                     <button onClick={handleLimitChange} className="mt-2 w-full py-2 bg-green-500 text-white rounded hover:bg-green-700">Set Limit</button>
                 </div>
@@ -103,12 +103,12 @@ export default function Admin() {
                         value={prizeName}
                         onChange={(e) => setPrizeName(e.target.value)}
                         placeholder="Set Prize Name"
-                        className="w-full p-2 border border-gray-300 rounded bg-darkred-700 text-darkyellow-500"
+                        className="w-full p-2 border border-gray-300 rounded bg-gray-200 text-white-500"
                     />
                     <button onClick={handlePrizeChange} className="mt-2 w-full py-2 bg-green-500 text-white rounded hover:bg-green-700">Set Prize</button>
                 </div>
                 <button onClick={handleCapture} className="w-full py-2 bg-yellow-500 text-white rounded hover:bg-yellow-700">Capture View</button>
-                {message && <p className="text-center text-lg">{message}</p>}
+                {message && <p className="text-center text-black text-lg">{message}</p>}
             </div>
         </div>
     );
