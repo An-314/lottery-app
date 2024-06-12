@@ -90,9 +90,15 @@ npm run dev
 2. 输入ID（格式为20XXXXXXXX，其中XX是0-9的数字）
 3. 点击“提交”按钮参与抽奖
 
+![用户界面1](demo/home-1.png)
+
+![用户界面2](demo/home-2.png)
+
 ### 管理员界面
 
 1. 打开[管理员页面](https://lottery-app-lime.vercel.app/admin)
 2. 查看当前所有中奖ID
 3. 设置抽奖上限和奖品名称
 4. 使用一键导出、一键删除和截图功能管理抽奖活动
+
+![管理员界面](demo/admin.png)
