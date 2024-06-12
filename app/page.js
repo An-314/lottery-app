@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useRef } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,6 +8,7 @@ import html2canvas from 'html2canvas';
 export default function Home() {
   const [id, setId] = useState('');
   const [message, setMessage] = useState('');
+  const [prizeName, setPrizeName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isRotated, setIsRotated] = useState(false);
   const [showWatermark, setShowWatermark] = useState(false);
@@ -20,6 +22,7 @@ export default function Home() {
     try {
       const response = await axios.post('/api/entries', { id });
       setMessage(response.data.message);
+      setPrizeName(response.data.prizeName);
     } catch (error) {
       setMessage('Error submitting your entry.');
     } finally {
@@ -90,6 +93,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
             >
               <p className="text-center text-lg text-white" style={{ transform: 'rotateY(180deg)' }}>{message}</p>
+              <p className="text-center text-lg text-white mt-2" style={{ transform: 'rotateY(180deg)' }}>Prize: {prizeName}</p>
               {showWatermark && (
                 <p className="absolute inset-0 flex items-center justify-center text-white text-4xl opacity-50" style={{ transform: 'rotateY(180deg)' }}>
                   兑换奖品凭证
@@ -116,4 +120,3 @@ export default function Home() {
     </div>
   );
 }
-
