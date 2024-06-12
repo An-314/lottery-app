@@ -85,7 +85,7 @@ export default function Admin() {
             </div>
             <div className="w-1/2 flex flex-col items-center justify-center bg-white p-4 rounded shadow-md space-y-4">
                 <h2 className="text-xl font-bold">Admin Panel</h2>
-                <img src="/path/to/your/logo.png" alt="Event Logo" className="w-1/2" />
+                <img src="/image/admin.png" alt="Event Logo" className="w-1/2" />
                 <div className="w-full">
                     <label className="block text-gray-700">Current Limit: {currentLimit}</label>
                     <input
