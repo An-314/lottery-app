@@ -5,11 +5,11 @@ export async function POST(req) {
     const { id } = await req.json();
     const n = parseInt(await kv.get('lottery_limit'), 10) || parseInt(process.env.LOTTERY_LIMIT, 10);
 
-    // // 验证ID格式
-    // const idPattern = /^20\d{8}$/;
-    // if (!idPattern.test(id)) {
-    //     return NextResponse.json({ message: 'Invalid ID format. Please enter an ID in the format 20XXXXXXXX.' }, { status: 400 });
-    // }
+    // 验证ID格式
+    const idPattern = /^20\d{8}$/;
+    if (!idPattern.test(id)) {
+        return NextResponse.json({ message: 'Invalid ID format. Please enter an ID in the format 20XXXXXXXX.' }, { status: 400 });
+    }
 
     let entries = await kv.get('entries') || [];
 
