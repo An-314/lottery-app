@@ -66,14 +66,16 @@ export default function Home() {
             >
               <h1 className="text-2xl font-bold mb-4 text-center text-white">溯·洄 抽奖系统</h1>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                  type="text"
-                  value={id}
-                  onChange={(e) => setId(e.target.value)}
-                  placeholder="Enter your ID"
-                  className="w-full p-2 border border-gray-300 rounded bg-darkred-700 text-darkyellow-500"
-                  required
-                />
+                <div className="flex justify-center w-full">
+                  <input
+                    type="text"
+                    value={id}
+                    onChange={(e) => setId(e.target.value)}
+                    placeholder="Enter your ID"
+                    className="w-3/4 p-2 border border-gray-300 rounded bg-darkred-700 text-darkyellow-500 text-center"
+                    required
+                  />
+                </div>
                 <div className="flex justify-center">
                   <button
                     type="submit"
