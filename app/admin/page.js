@@ -3,13 +3,15 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
+import { saveAs } from 'file-saver';
+import { parse } from 'json2csv';
 
 export default function Admin() {
     const [entries, setEntries] = useState([]);
     const [limit, setLimit] = useState('');
     const [currentLimit, setCurrentLimit] = useState('');
-    const [prizeName, setPrizeName] = useState('');
     const [currentPrizeName, setCurrentPrizeName] = useState('');
+    const [prizeName, setPrizeName] = useState('');
     const [message, setMessage] = useState('');
     const captureRef = useRef(null);
 
@@ -27,13 +29,10 @@ export default function Admin() {
     }, []);
 
     const handleExport = () => {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(entries));
-        const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href", dataStr);
-        downloadAnchorNode.setAttribute("download", "entries.json");
-        document.body.appendChild(downloadAnchorNode);
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
+        const fields = ['ID'];
+        const csv = parse(entries.map(entry => ({ ID: entry })), { fields });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        saveAs(blob, `${currentPrizeName}.csv`);
     };
 
     const handleClear = async () => {

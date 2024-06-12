@@ -24,7 +24,7 @@ export default function Home() {
       setMessage(response.data.message);
       setPrizeName(response.data.prizeName);
     } catch (error) {
-      setMessage('Error submitting your entry.');
+      setMessage('很遗憾，没有中奖，下回再试试吧！');
     } finally {
       setTimeout(() => {
         setIsLoading(false);
@@ -64,7 +64,7 @@ export default function Home() {
               initial={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <h1 className="text-2xl font-bold mb-4 text-center text-white">Lottery System</h1>
+              <h1 className="text-2xl font-bold mb-4 text-center text-white">溯·洄 抽奖系统</h1>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <input
                   type="text"
@@ -93,7 +93,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
             >
               <p className="text-center text-lg text-white" style={{ transform: 'rotateY(180deg)' }}>{message}</p>
-              <p className="text-center text-lg text-white mt-2" style={{ transform: 'rotateY(180deg)' }}>Prize: {prizeName}</p>
+              <p className="text-center text-lg text-white mt-2" style={{ transform: 'rotateY(180deg)' }}>奖项: {prizeName} ID:{id}</p>
               {showWatermark && (
                 <p className="absolute inset-0 flex items-center justify-center text-white text-4xl opacity-50" style={{ transform: 'rotateY(180deg)' }}>
                   兑换奖品凭证

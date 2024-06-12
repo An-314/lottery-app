@@ -11,9 +11,11 @@
   "dependencies": {
     "@vercel/kv": "^2.0.0",
     "axios": "^1.7.2",
+    "file-saver": "^2.0.5",
     "firebase": "^10.12.2",
     "framer-motion": "^11.2.10",
     "html2canvas": "^1.4.1",
+    "json2csv": "^6.0.0-alpha.2",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18"
