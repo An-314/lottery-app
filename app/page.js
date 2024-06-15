@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import html2canvas from 'html2canvas';
@@ -12,10 +12,24 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isRotated, setIsRotated] = useState(false);
   const [showWatermark, setShowWatermark] = useState(false);
+  const [submittedId, setSubmittedId] = useState(null);
   const captureRef = useRef(null);
+
+  useEffect(() => {
+    const storedId = localStorage.getItem('submittedId');
+    if (storedId) {
+      setSubmittedId(storedId);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (submittedId && submittedId !== id) {
+      alert('您已经提交过不同的 ID，不能再次提交。');
+      return;
+    }
+
     setIsLoading(true);
     setIsRotated(true);
 
@@ -23,6 +37,8 @@ export default function Home() {
       const response = await axios.post('/api/entries', { id });
       setMessage(response.data.message);
       setPrizeName(response.data.prizeName);
+      localStorage.setItem('submittedId', id);
+      setSubmittedId(id);
     } catch (error) {
       setMessage('很遗憾，没有中奖，下回再试试吧！');
     } finally {
