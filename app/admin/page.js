@@ -7,37 +7,49 @@ import { saveAs } from 'file-saver';
 import { parse } from 'json2csv';
 
 export default function Admin() {
-    const [entries, setEntries] = useState([]);
+    const [dataset, setDataset] = useState([]);
     const [limit, setLimit] = useState('');
     const [currentLimit, setCurrentLimit] = useState('');
     const [currentPrizeName, setCurrentPrizeName] = useState('');
     const [prizeName, setPrizeName] = useState('');
     const [message, setMessage] = useState('');
+    const [winners, setWinners] = useState([]);
+    const [selectedPrize, setSelectedPrize] = useState('');
+    const [filteredWinners, setFilteredWinners] = useState([]);
     const captureRef = useRef(null);
 
     useEffect(() => {
         const fetchData = async () => {
-            const entriesResponse = await axios.get('/api/entries');
+            const datasetResponse = await axios.get('/api/entries');
             const limitResponse = await axios.get('/api/limit');
             const prizeResponse = await axios.get('/api/prize');
-            setEntries(entriesResponse.data.entries);
+            const winnersResponse = await axios.get('/api/winners');
+            setDataset(datasetResponse.data.dataset || []);
             setCurrentLimit(limitResponse.data.limit);
             setCurrentPrizeName(prizeResponse.data.prizeName);
+            setWinners(winnersResponse.data.winners || []);
         };
 
         fetchData();
     }, []);
 
+    const fetchWinners = async () => {
+        const winnersResponse = await axios.get('/api/winners');
+        setWinners(winnersResponse.data.winners || []);
+        setFilteredWinners(winnersResponse.data.winners || []);
+    };
+
     const handleExport = () => {
         const fields = ['ID'];
-        const csv = parse(entries.map(entry => ({ ID: entry })), { fields });
+        const csv = parse(dataset.map(entry => ({ ID: entry })), { fields });
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         saveAs(blob, `${currentPrizeName}.csv`);
     };
 
     const handleClear = async () => {
         await axios.delete('/api/entries');
-        setEntries([]);
+        setDataset([]);
+        setWinners([]);
     };
 
     const handleLimitChange = async () => {
@@ -60,6 +72,16 @@ export default function Admin() {
         }
     };
 
+    const handleLottery = async () => {
+        try {
+            const response = await axios.post('/api/lottery');
+            setMessage(response.data.message);
+            await fetchWinners(); // 抽奖后获取最新的获奖者信息
+        } catch (error) {
+            setMessage('Failed to run lottery.');
+        }
+    };
+
     const handleCapture = async () => {
         if (captureRef.current) {
             const canvas = await html2canvas(document.body);
@@ -70,13 +92,36 @@ export default function Admin() {
         }
     };
 
+    const handleFilterChange = (e) => {
+        setSelectedPrize(e.target.value);
+        if (e.target.value) {
+            const filtered = winners.filter(winner => winner.prize_name === e.target.value);
+            setFilteredWinners(filtered);
+        } else {
+            setFilteredWinners(winners);
+        }
+    };
+
+    const handleExportWinners = () => {
+        const fields = ['ID', 'Prize'];
+        const csv = parse((filteredWinners.length > 0 ? filteredWinners : winners).map(winner => ({ ID: winner.student_id, Prize: winner.prize_name })), { fields });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        saveAs(blob, `Winners_${selectedPrize || 'all'}.csv`);
+    };
+
+    const handleClearWinners = async () => {
+        await axios.delete('/api/winners');
+        setWinners([]);
+        setFilteredWinners([]);
+    };
+
     return (
         <div className="flex items-start justify-center min-h-screen bg-gray-100 p-4 space-x-4">
             <div className="w-1/4 bg-white p-4 rounded shadow-md">
-                <h2 className="text-black text-xl font-bold mb-4">Winners</h2>
+                <h2 className="text-xl text-black font-bold mb-4">All Entries</h2>
                 <ul className="space-y-2">
-                    {entries.map((entry, index) => (
-                        <li key={index} className="bg-gray-200 p-2 rounded text-black">{entry}</li>
+                    {dataset.map((entry, index) => (
+                        <li key={index} className="bg-gray-200 text-black p-2 rounded">{entry}</li>
                     ))}
                 </ul>
                 <button onClick={handleExport} className="mt-4 w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-700">Export Entries</button>
@@ -92,7 +137,7 @@ export default function Admin() {
                         value={limit}
                         onChange={(e) => setLimit(e.target.value)}
                         placeholder="Set Lottery Limit"
-                        className="w-full p-2 border border-gray-300 rounded bg-gray-200 text-darkyellow-500"
+                        className="w-full p-2 border border-gray-300 rounded bg-gray-700 text-white-500"
                     />
                     <button onClick={handleLimitChange} className="mt-2 w-full py-2 bg-green-500 text-white rounded hover:bg-green-700">Set Limit</button>
                 </div>
@@ -103,12 +148,29 @@ export default function Admin() {
                         value={prizeName}
                         onChange={(e) => setPrizeName(e.target.value)}
                         placeholder="Set Prize Name"
-                        className="w-full p-2 border border-gray-300 rounded bg-gray-200 text-white-500"
+                        className="w-full p-2 border border-gray-300 rounded bg-gray-700 text-white-500"
                     />
                     <button onClick={handlePrizeChange} className="mt-2 w-full py-2 bg-green-500 text-white rounded hover:bg-green-700">Set Prize</button>
                 </div>
-                <button onClick={handleCapture} className="w-full py-2 bg-yellow-500 text-white rounded hover:bg-yellow-700">Capture View</button>
+                <button onClick={handleLottery} className="mt-4 w-full py-2 bg-yellow-500 text-white rounded hover:bg-yellow-700">Run Lottery</button>
+                <button onClick={handleCapture} className="mt-4 w-full py-2 bg-yellow-500 text-white rounded hover:bg-yellow-700">Capture View</button>
                 {message && <p className="text-center text-black text-lg">{message}</p>}
+            </div>
+            <div className="w-1/4 bg-white p-4 rounded shadow-md">
+                <h2 className="text-xl text-black font-bold mb-4">Winners</h2>
+                <select value={selectedPrize} onChange={handleFilterChange} className="w-full p-2 border text-black border-gray-300 rounded mb-4">
+                    <option className="text-black" value="">All Prizes</option>
+                    {[...new Set(winners.map(winner => winner.prize_name))].map((prize, index) => (
+                        <option className="text-black" key={index} value={prize}>{prize}</option>
+                    ))}
+                </select>
+                <ul className="space-y-2">
+                    {(filteredWinners.length > 0 ? filteredWinners : winners).map((winner, index) => (
+                        <li key={index} className="bg-gray-200 text-black p-2 rounded">ID: {winner.student_id}, 奖项: {winner.prize_name}</li>
+                    ))}
+                </ul>
+                <button onClick={handleExportWinners} className="mt-4 w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-700">Export Winners</button>
+                <button onClick={handleClearWinners} className="mt-2 w-full py-2 bg-red-500 text-white rounded hover:bg-red-700">Clear Winners</button>
             </div>
         </div>
     );

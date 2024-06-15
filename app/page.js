@@ -95,7 +95,9 @@ export default function Home() {
               animate={{ opacity: 1 }}
             >
               <p className="text-center text-lg text-white" style={{ transform: 'rotateY(180deg)' }}>{message}</p>
-              <p className="text-center text-lg text-white mt-2" style={{ transform: 'rotateY(180deg)' }}>奖项: {prizeName} ID:{id}</p>
+              <p className="text-center text-lg text-white mt-2" style={{ transform: 'rotateY(180deg)' }}>
+                {prizeName ? `奖项: ${prizeName}` : ''} ID: {id}
+              </p>
               {showWatermark && (
                 <p className="absolute inset-0 flex items-center justify-center text-white text-4xl opacity-50" style={{ transform: 'rotateY(180deg)' }}>
                   兑换奖品凭证

@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -H 0.0.0.0",
     "build": "next build",
-    "start": "next start",
+    "start": "next start  -H 0.0.0.0",
     "lint": "next lint"
   },
   "dependencies": {
@@ -16,9 +16,13 @@
     "framer-motion": "^11.2.10",
     "html2canvas": "^1.4.1",
     "json2csv": "^6.0.0-alpha.2",
-    "next": "14.2.3",
+    "knex": "^3.1.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.10.1",
+    "next": "^14.2.3",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "webpack": "^5.92.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",
